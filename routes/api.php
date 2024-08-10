@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\CategoryProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,4 +22,12 @@ Route::middleware("auth:api")->group(function () {
     Route::get("/refresh", [AuthController::class, 'refresh']);
     Route::post("/logout", [AuthController::class, 'logout']);
     Route::get("/me", [AuthController::class, 'me']);
+
+    Route::prefix("/category-products")->group(function () {
+        Route::get("/", [CategoryProductController::class, 'index']);
+        Route::get("/{id}", [CategoryProductController::class, 'show']);
+        Route::post("/", [CategoryProductController::class, 'store']);
+        Route::put("/{id}", [CategoryProductController::class, 'update']);
+        Route::delete("/{id}", [CategoryProductController::class, 'destroy']);
+    });
 });
