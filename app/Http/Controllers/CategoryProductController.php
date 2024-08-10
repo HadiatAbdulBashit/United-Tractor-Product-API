@@ -13,6 +13,31 @@ class CategoryProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * @OA\Get(
+     *     path="/category-products",
+     *     tags={"Category Products"},
+     *     operationId="allCategoryProduct",
+     *     summary="List all category products",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category products found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Category Product found",
+     *                 "data": "Array of category product",
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function index()
     {
         $categoryProduct = CategoryProduct::latest()->get();
@@ -29,6 +54,54 @@ class CategoryProductController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * @OA\Post(
+     *     path="/category-products",
+     *     tags={"Category Products"},
+     *     operationId="storeCategoryProduct",
+     *     summary="Create a new category product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(property="name", type="string", example="New Category")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Category Product created successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Category Product created successfully",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "New Category"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "create Category Product failed!",
+     *                 "errors": {
+     *                     "name": "array of error",
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -59,6 +132,50 @@ class CategoryProductController extends Controller
      * @param  int id
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * @OA\Get(
+     *     path="/category-products/{id}",
+     *     tags={"Category Products"},
+     *     operationId="showCategoryProduct",
+     *     summary="Get a category product by ID",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category Product found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Category Product found",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "HP"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Category Product not found"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function show($id)
     {
         $categoryProduct = CategoryProduct::find($id);
@@ -83,6 +200,69 @@ class CategoryProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int id
      * @return \Illuminate\Http\Response
+     */
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @OA\Put(
+     *     path="/category-products/{id}",
+     *     tags={"Category Products"},
+     *     operationId="updateCategoryProduct",
+     *     summary="Update an existing category product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(property="name", type="string", example="Updated Category")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category Product updated successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Category Product updated successfully",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "Updated Category"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Category Product not found"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "update Category Product failed!",
+     *                 "errors": {
+     *                     "name": "array of error",
+     *                 }
+     *             }
+     *         )
+     *     )
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -122,6 +302,45 @@ class CategoryProductController extends Controller
      *
      * @param  int id
      * @return \Illuminate\Http\Response
+     */
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @OA\Delete(
+     *     path="/category-products/{id}",
+     *     tags={"Category Products"},
+     *     operationId="deleteCategoryProduct",
+     *     summary="Delete a category product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Category Product deleted successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Category Product deleted successfully!"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Category Product not found"
+     *             }
+     *         )
+     *     )
+     * )
      */
     public function destroy($id)
     {
