@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryProductController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,14 @@ Route::prefix("/v1")->group(function () {
             Route::post("/", [CategoryProductController::class, 'store']);
             Route::put("/{id}", [CategoryProductController::class, 'update']);
             Route::delete("/{id}", [CategoryProductController::class, 'destroy']);
+        });
+
+        Route::prefix("/products")->group(function () {
+            Route::get("/", [ProductController::class, 'index']);
+            Route::get("/{id}", [ProductController::class, 'show']);
+            Route::post("/", [ProductController::class, 'store']);
+            Route::put("/{id}", [ProductController::class, 'update']);
+            Route::delete("/{id}", [ProductController::class, 'destroy']);
         });
     });
 });
