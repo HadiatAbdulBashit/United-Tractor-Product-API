@@ -16,6 +16,32 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+    /**
+     * @OA\Get(
+     *     path="/products",
+     *     tags={"Products"},
+     *     operationId="allProducts",
+     *     summary="List all products",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Products found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Product found",
+     *                 "data": "Array of products",
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function index()
     {
         $Product = Product::latest()->get();
@@ -32,6 +58,77 @@ class ProductController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * @OA\Post(
+     *     path="/products",
+     *     tags={"Products"},
+     *     operationId="storeProduct",
+     *     summary="Create a new product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"name", "price", "image", "category_product_id"},
+     *                 @OA\Property(property="name", type="string", example="Sample Product"),
+     *                 @OA\Property(property="price", type="integer", example=100),
+     *                 @OA\Property(property="image", type="string", format="binary"),
+     *                 @OA\Property(property="category_product_id", type="integer", example=1)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Product created successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Product created successfully",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "Sample Product",
+     *                     "price": 100,
+     *                     "category_product_id": 1,
+     *                     "image": "path/to/image.jpg"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "create Product failed!",
+     *                 "errors": {
+     *                     "name": "array of error",
+     *                     "price": "array of error",
+     *                     "image": "array of error",
+     *                     "category_product_id": "array of error"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Category Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Category Product not found!"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -90,6 +187,53 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    /**
+     * @OA\Get(
+     *     path="/products/{id}",
+     *     tags={"Products"},
+     *     operationId="showProduct",
+     *     summary="Get a product by ID",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Product found",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "Sample Product",
+     *                     "price": 100,
+     *                     "category_product_id": 1,
+     *                     "image": "path/to/image.jpg"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Product not found"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
+     */
     public function show($id)
     {
         $product = Product::with("category")->find($id);
@@ -114,6 +258,82 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @param  int $id
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * @OA\Put(
+     *     path="/products/{id}",
+     *     tags={"Products"},
+     *     operationId="updateProduct",
+     *     summary="Update an existing product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 @OA\Property(property="name", type="string", example="Updated Product"),
+     *                 @OA\Property(property="price", type="integer", example=150),
+     *                 @OA\Property(property="image", type="string", format="binary"),
+     *                 @OA\Property(property="category_product_id", type="integer", example=1)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product updated successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Product updated successfully",
+     *                 "data": {
+     *                     "id": 1,
+     *                     "name": "Updated Product",
+     *                     "price": 150,
+     *                     "category_product_id": 1,
+     *                     "image": "path/to/new-image.jpg"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Product not found"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "update Product failed!",
+     *                 "errors": {
+     *                     "name": "array of error",
+     *                     "price": "array of error",
+     *                     "image": "array of error",
+     *                     "category_product_id": "array of error"
+     *                 }
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
      */
     public function update(Request $request, $id)
     {
@@ -178,6 +398,46 @@ class ProductController extends Controller
      *
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
+     */
+
+    /**
+     * @OA\Delete(
+     *     path="/products/{id}",
+     *     tags={"Products"},
+     *     operationId="deleteProduct",
+     *     summary="Delete a product",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Product deleted successfully",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "success",
+     *                 "message": "Product deleted successfully!"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Product not found",
+     *         @OA\JsonContent(
+     *             example={
+     *                 "status": "failed",
+     *                 "message": "Product not found"
+     *             }
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized"
+     *     )
+     * )
      */
     public function destroy($id)
     {
